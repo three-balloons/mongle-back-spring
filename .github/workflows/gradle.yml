@@ -92,7 +92,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p /home/ec2-user/cicd
+            sudo mkdir -p /home/ec2-user/cicd
             sudo chmod 777 /home/ec2-user/cicd
 
       - name: Copy deploy script file to remote
