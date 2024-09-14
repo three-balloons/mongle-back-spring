@@ -85,6 +85,16 @@ jobs:
           target: "/home/ubuntu/bubble/back/build/libs"
           strip_components: 2
 
+      - name: Create directory for deploy script file and set permissions on remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /home/ec2-user/cicd
+            sudo chmod 777 /home/ec2-user/cicd
+
       - name: Copy deploy script file to remote
         uses: appleboy/scp-action@master
         with:
@@ -104,6 +114,7 @@ jobs:
           script: |
             sudo chmod +x /home/ec2-user/cicd/deploy.sh
             sudo sh /home/ec2-user/cicd/deploy.sh
+            
       - name: Set up port forwarding on remote server
         uses: appleboy/ssh-action@master
         with:
