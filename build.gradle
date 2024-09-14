@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'me.bubble'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' //webclient
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // 스프링 데이터 JPA
+    implementation 'org.springframework.boot:spring-boot-starter-security' //스프링 시큐리티
+    testImplementation 'org.springframework.security:spring-security-test' //스프링 시큐리티 테스트 의존성
+    runtimeOnly 'com.h2database:h2' // 인메모리 데이터베이스
+    compileOnly 'org.projectlombok:lombok' // 롬복
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0' //스웨거
+    implementation 'mysql:mysql-connector-java:8.0.33' // mysql
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2' // Jackson
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = false
+}
