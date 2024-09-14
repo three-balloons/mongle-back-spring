@@ -43,12 +43,16 @@ jobs:
         
       - name: Download keystore
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ./src/main/resources/ssl/keystore.p12
-      
+
       - name: Generate application.yml from environment variables
         run: |
           cp ./src/main/resources/application.yml ./src/main/resources/application.yml.bak  # Backup
           envsubst < ./src/main/resources/application.yml.bak > ./src/main/resources/application.yml
 
+      - name: Print application.yml
+        run: |
+          cat ./src/main/resources/application.yml
+          
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
       
