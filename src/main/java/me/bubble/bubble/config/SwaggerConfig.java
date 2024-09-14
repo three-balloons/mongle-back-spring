@@ -17,7 +17,7 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("Bubble API Definition TEST") // API의 제목
+                .title("Bubble API Definition") // API의 제목
                 .description("버블 API 상세설명") // API에 대한 설명
                 .version("1.0.0"); // API의 버전
     }
