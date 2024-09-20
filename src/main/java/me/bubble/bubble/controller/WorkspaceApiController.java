@@ -67,6 +67,30 @@ public class WorkspaceApiController {
         List<Workspace> workspaceList = workspaceService.getAllWorkspacesByUser(user);
 
         for (Workspace workspace: workspaceList) {
+            if (workspace.getDeletedAt() == null)
+                responseList.add(new WorkspaceResponse(workspace));
+        }
+
+        return ApiResponse.<List<WorkspaceResponse>>builder()
+                .code("OK")
+                .message("")
+                .data(responseList)
+                .build();
+    }
+
+    @GetMapping("/deleted")
+    @Operation(summary = "삭제된 워크스페이스 모두 가져오기", description = "해당 유저의 삭제된 워크스페이스 모두 가져오기")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json"))
+    })
+    public ApiResponse<List<WorkspaceResponse>> getDeletedWorkspaces() {
+        List<WorkspaceResponse> responseList = new ArrayList<>();
+        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
+        User user = userService.findUserByOauthId(oAuthId);
+
+        List<Workspace> workspaceList = workspaceService.getAllWorkspacesByUser(user);
+
+        for (Workspace workspace: workspaceList) {
             if (workspace.getDeletedAt() != null)
                 responseList.add(new WorkspaceResponse(workspace));
         }
