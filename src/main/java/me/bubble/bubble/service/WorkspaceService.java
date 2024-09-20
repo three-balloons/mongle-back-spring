@@ -25,7 +25,7 @@ public class WorkspaceService {
     }
 
     public List<Workspace> getAllWorkspacesByUser(User user) {
-        return workspaceRepository.findAllByUser(user);
+        return workspaceRepository.findAllByUserOrderByUpdatedAtDesc(user);
     }
 
     @Transactional

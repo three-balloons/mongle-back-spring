@@ -67,7 +67,8 @@ public class WorkspaceApiController {
         List<Workspace> workspaceList = workspaceService.getAllWorkspacesByUser(user);
 
         for (Workspace workspace: workspaceList) {
-            responseList.add(new WorkspaceResponse(workspace));
+            if (workspace.getDeletedAt() != null)
+                responseList.add(new WorkspaceResponse(workspace));
         }
 
         return ApiResponse.<List<WorkspaceResponse>>builder()
