@@ -1,4 +1,4 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

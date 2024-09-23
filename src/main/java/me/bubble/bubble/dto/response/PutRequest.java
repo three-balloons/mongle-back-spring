@@ -1,9 +1,12 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.bubble.bubble.dto.request.PutCreateRequest;
+import me.bubble.bubble.dto.request.PutDeleteRequest;
+import me.bubble.bubble.dto.request.PutUpdateRequest;
 
 import java.util.List;
 

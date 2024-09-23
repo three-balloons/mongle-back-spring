@@ -1,4 +1,4 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

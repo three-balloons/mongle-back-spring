@@ -1,11 +1,10 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.bubble.bubble.domain.Workspace;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter

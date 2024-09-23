@@ -1,4 +1,4 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;

@@ -1,20 +1,21 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-public class BubbleAddRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PutMoveRequest {
+    private String newPath;
     private String name;
     private int top;
     private int left;
     private int height;
     private int width;
-    private boolean isVisible;
-    private boolean isBubblized;
+    private boolean bubblized;
+    private boolean visible;
 }

@@ -1,10 +1,8 @@
-package me.bubble.bubble.dto;
+package me.bubble.bubble.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 import me.bubble.bubble.domain.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

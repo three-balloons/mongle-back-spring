@@ -31,8 +31,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .formLogin(formLogin -> formLogin.disable()) // 폼 로그인 비활성화
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화, API 서버의 경우 필요 X(세션이 아닌 JWT 사용)
+                .formLogin(formLogin -> formLogin.disable()) // 폼 로그인 비활성화, UsernamePasswordAuthenticationFilter 비활성화
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // Pre-flight 요청 허용

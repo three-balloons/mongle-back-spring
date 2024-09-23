@@ -1,7 +1,6 @@
 package me.bubble.bubble.exception;
 
-import me.bubble.bubble.domain.Bubble;
-import me.bubble.bubble.dto.ApiResponse;
+import me.bubble.bubble.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
