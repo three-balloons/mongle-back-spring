@@ -6,7 +6,7 @@ import me.bubble.bubble.domain.User;
 import java.time.LocalDateTime;
 
 @Getter
-public class GetUserResponse {
+public class UserResponse {
     private final String oauth_id;
     private final String provider;
     private final String name;
@@ -14,7 +14,7 @@ public class GetUserResponse {
     private final String email;
     private final String refresh_token;
 
-    public GetUserResponse(User user) {
+    public UserResponse(User user) {
         this.oauth_id = user.getOauthId();
         this.provider = user.getProvider();
         this.name = user.getName();

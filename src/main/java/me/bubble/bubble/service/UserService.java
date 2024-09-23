@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.bubble.bubble.domain.User;
 import me.bubble.bubble.dto.request.PutUserRequest;
-import me.bubble.bubble.dto.response.GetUserResponse;
+import me.bubble.bubble.dto.response.UserResponse;
 import me.bubble.bubble.exception.UserNotFoundException;
 import me.bubble.bubble.repository.UserRepository;
 import me.bubble.bubble.util.SecurityUtil;
@@ -35,14 +35,14 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    public GetUserResponse findUserByOauthId(String oAuthId) {
+    public UserResponse findUserByOauthId(String oAuthId) {
         User user = userRepository.findByOauthId(oAuthId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return new GetUserResponse(user);
+        return new UserResponse(user);
     }
 
     @Transactional
-    public GetUserResponse updateUserNameAndEmail(PutUserRequest request) {
+    public UserResponse updateUserNameAndEmail(PutUserRequest request) {
         String oAuthId = SecurityUtil.getCurrentUserOAuthId();
         // 사용자 조회
         User user = userRepository.findByOauthId(oAuthId)
@@ -53,7 +53,7 @@ public class UserService {
         user.setEmail(request.getEmail());
 
         // 변경된 사용자 정보 저장
-        return new GetUserResponse(userRepository.save(user));
+        return new UserResponse(userRepository.save(user));
     }
 
     @Transactional

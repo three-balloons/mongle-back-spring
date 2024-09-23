@@ -46,8 +46,8 @@ jobs:
 
       - name: Generate application.yml from environment variables
         run: |
-          cp ./src/main/resources/application.yml ./src/main/resources/application.yml.bak  # Backup
-          envsubst < ./src/main/resources/application.yml.bak > ./src/main/resources/application.yml
+          cp ./src/main/resources/application-dev.yml ./src/main/resources/application-dev.yml.bak  # Backup
+          envsubst < ./src/main/resources/application-dev.yml.bak > ./src/main/resources/application-dev.yml
           
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
