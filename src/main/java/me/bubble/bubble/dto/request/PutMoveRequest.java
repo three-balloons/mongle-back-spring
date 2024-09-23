@@ -12,10 +12,10 @@ import lombok.Setter;
 public class PutMoveRequest {
     private String newPath;
     private String name;
-    private int top;
-    private int left;
-    private int height;
-    private int width;
+    private Integer top;
+    private Integer left;
+    private Integer height;
+    private Integer width;
     private boolean bubblized;
     private boolean visible;
 }

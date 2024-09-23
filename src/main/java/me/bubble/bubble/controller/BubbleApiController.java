@@ -8,11 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import me.bubble.bubble.dto.request.*;
 import me.bubble.bubble.dto.response.*;
-import me.bubble.bubble.exception.*;
 import me.bubble.bubble.service.BubbleService;
-import me.bubble.bubble.service.CurveService;
-import me.bubble.bubble.service.WorkspaceService;
-import me.bubble.bubble.util.SecurityUtil;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -23,7 +19,6 @@ import java.util.*;
 public class BubbleApiController {
 
     private final BubbleService bubbleService;
-    private final WorkspaceService workspaceService;
 
     @GetMapping("/{workspaceId}")
     @Operation(summary = "버블 정보 가져오기", description = "버블과 그 버블에 포함된 버블, 커브 정보 가져오기")
@@ -37,24 +32,7 @@ public class BubbleApiController {
     public ApiResponse<List<BubbleInfoResponse>> getBubble(@PathVariable("workspaceId") UUID workspaceId,
                                                            @RequestParam(required = true) String path,
                                                            @RequestParam(required = false, defaultValue = "1") Integer depth) {
-
-        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-
-        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-        if (!userOAuthId.equals(workspaceOAuthId)) {
-            throw new InappropriateUserException("Inappropriate User");
-        }
-
-        if (depth < 1 || depth > 5) {
-            throw new InappropriateDepthException("Inappropriate Depth");
-        }
-
         List<BubbleInfoResponse> bubbles = bubbleService.getBubblesByWorkspaceAndPathAndPathDepth(workspaceId, path, depth);
-
-        if (bubbles.isEmpty() && !path.equals("/")) {
-            throw new InappropriatePathException("Inappropriate Path");
-        }
-
         return ApiResponse.<List<BubbleInfoResponse>>builder()
                 .code("OK")
                 .message("")
@@ -72,17 +50,6 @@ public class BubbleApiController {
     })
     public ApiResponse<Void> deleteBubble(@PathVariable UUID workspaceId,
                                           @RequestParam(required = true) String path){
-
-        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-
-        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-        if (!userOAuthId.equals(workspaceOAuthId)) {
-            throw new InappropriateUserException("Inappropriate User");
-        }
-
-        if (path.endsWith("/")) {
-            throw new InappropriatePathException("Inappropriate path");
-        }
         bubbleService.deleteByPathStartingWithAndWorkspaceId(path, workspaceId);
         return ApiResponse.<Void>builder()
                 .code("OK")
@@ -102,43 +69,17 @@ public class BubbleApiController {
             @Parameter(name = "depth", description = "탐색을 원하는 깊이 (기본값: 가장 깊은 버블까지)", example = "3"),
     })
     // <?>: 어떤 자료형의 객체도 매개변수로 받겠다는 의미
-    public ApiResponse<?> getBubbleTree(@PathVariable UUID workspaceId,
+    public ApiResponse<List<?>> getBubbleTree(@PathVariable UUID workspaceId,
                                         @RequestParam(required = false, defaultValue = "/") String path,
                                         @RequestParam(required = false, defaultValue = "-1") Integer depth)
     // RequestedParam 내부에는 정적이 값이 들어가야해서 음수로 설정 후 밑에서 음수일 경우 기본값을 바꿔주는 형식으로 구현
     {
-        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-
-        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-        if (!userOAuthId.equals(workspaceOAuthId)) {
-            throw new InappropriateUserException("Inappropriate user");
-        }
-        if (depth < -1 || depth == 0) {
-            throw new InappropriateDepthException("Inappropriate depth");
-        }
-        Integer max_depth = bubbleService.getMaxPathDepth(workspaceId);
-
-        if (depth == -1) { // depth 기본값을 pathDepth의 최대값으로
-            depth = max_depth;
-        }
-
-        // 응답 객체 만드는 과정
-        if (!path.equals("/")) { //특정 path로 요청했을 경우
-            List<BubbleTreeResponse> bubbleTreeResponse = bubbleService.getBubbleTreeForPath(path, workspaceId, depth);
-            return ApiResponse.<List<BubbleTreeResponse>>builder()
-                    .code("OK")
-                    .message("특정 path로의 요청")
-                    .data(bubbleTreeResponse)
-                    .build();
-        } else{ // 기본 path로의 요청
-            //pathDepth가 1인 버블 객체를 가져온 후
-            List<List<BubbleTreeResponse>> bubbleTreeResponse = bubbleService.getBubbleTreeForDefaultPath(workspaceId, depth);
-            return ApiResponse.<List<List<BubbleTreeResponse>>>builder()
-                    .code("OK")
-                    .message("기본 path('/')로의 요청")
-                    .data(bubbleTreeResponse)
-                    .build();
-        }
+        BubbleTreeCapsule treeResponse = bubbleService.getBubbleTree(path, workspaceId, depth);
+        return ApiResponse.<List<?>>builder()
+                .code("OK")
+                .message(treeResponse.message())
+                .data(treeResponse.bubbleTreeResponse())
+                .build();
     }
 
     @PostMapping("/{workspaceId}")
@@ -172,15 +113,7 @@ public class BubbleApiController {
     public ApiResponse<PutResponse> putBubble (@PathVariable UUID workspaceId,
                                                @RequestParam(required = true) String path,
                                                @RequestBody PutRequest request) {
-        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-
-        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-        if (!userOAuthId.equals(workspaceOAuthId)) {
-            throw new InappropriateUserException("Inappropriate user");
-        }
-
         PutCapsule putCapsule = bubbleService.putBubble(request, path, workspaceId);
-
         return ApiResponse.<PutResponse>builder()
                 .code("OK")
                 .message(putCapsule.responseMessage())
@@ -200,16 +133,7 @@ public class BubbleApiController {
     public ApiResponse<Void> moveBubble (@PathVariable UUID workspaceId,
                                                @RequestParam(required = true) String oldPath,
                                                @RequestBody PutMoveRequest request) {
-
-        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-
-        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-        if (!userOAuthId.equals(workspaceOAuthId)) {
-            throw new InappropriateUserException("Inappropriate user");
-        }
-
         bubbleService.moveBubble(request, oldPath, workspaceId);
-
         return ApiResponse.<Void>builder() // Workspace는 적절히 주어진다고 가정.
                 .code("OK")
                 .message("")

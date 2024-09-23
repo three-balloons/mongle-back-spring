@@ -23,20 +23,62 @@ public class BubbleService {
     private final CurveService curveService;
     private final WorkspaceService workspaceService;
 
-    public Integer getMaxPathDepth(UUID workspaceId) {
+    public BubbleTreeCapsule getBubbleTree(String path, UUID workspaceId, Integer depth) {
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
+
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate user");
+        }
+        if (depth < -1 || depth == 0) {
+            throw new InappropriateDepthException("Inappropriate depth");
+        }
         Bubble bubble = bubbleRepository.findTopByWorkspaceIdOrderByPathDepthDesc(workspaceId)
                 .orElseThrow(() -> new NoBubbleInWorkspaceException("No Bubble In Workspace " + workspaceId));
-        return bubble.getPathDepth();
+        Integer max_depth = bubble.getPathDepth();
+
+        if (depth == -1) { // depth 기본값을 pathDepth의 최대값으로
+            depth = max_depth;
+        }
+
+        if (!path.equals("/")) { //특정 path로 요청했을 경우
+            List<BubbleTreeResponse> bubbleTreeResponse = getBubbleTreeForPath(path, workspaceId, depth);
+            return new BubbleTreeCapsule(bubbleTreeResponse, "특정 Path로의 요청");
+        } else { // 기본 path로의 요청
+            //pathDepth가 1인 버블 객체를 가져온 후
+            List<List<BubbleTreeResponse>> bubbleTreeResponse = getBubbleTreeForDefaultPath(workspaceId, depth);
+            return new BubbleTreeCapsule(bubbleTreeResponse, "기본 Path로의 요청");
+        }
     }
 
     @Transactional
     public void deleteByPathStartingWithAndWorkspaceId(String path, UUID workspaceId) {
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate User");
+        }
+        if (path.endsWith("/")) {
+            throw new InappropriatePathException("Inappropriate path");
+        }
         bubbleRepository.deleteByPathStartingWithAndWorkspaceId(path, workspaceId);
     }
 
     public List<BubbleInfoResponse> getBubblesByWorkspaceAndPathAndPathDepth(UUID workspaceId, String path, Integer pathDepth) {
-        List<Bubble> bubbles =  bubbleRepository.findByWorkspaceIdAndPathStartsWithAndPathDepthLessThanEqualOrderByPathDepthAsc(workspaceId, path, pathDepth);
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
 
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate User");
+        }
+
+        if (pathDepth < 1 || pathDepth > 5) {
+            throw new InappropriateDepthException("Inappropriate Depth");
+        }
+        List<Bubble> bubbles =  bubbleRepository.findByWorkspaceIdAndPathStartsWithAndPathDepthLessThanEqualOrderByPathDepthAsc(workspaceId, path, pathDepth);
+        if (bubbles.isEmpty() && !path.equals("/")) {
+            throw new InappropriatePathException("Inappropriate Path");
+        }
         List<BubbleInfoResponse> bubbleResponse = new ArrayList<>();
         for (Bubble bubble: bubbles) {
             bubbleResponse.add(buildBubbleResponse(bubble));
@@ -52,9 +94,6 @@ public class BubbleService {
         List<BubbleTreeResponse> bubbleTreeResponse = buildBubbleTreeResponseList(bubble, workspaceId, depth);
 
         return bubbleTreeResponse;
-    }
-    private int countOccurrences (String str,char character){
-        return (int) str.chars().filter(ch -> ch == character).count();
     }
 
     public List<List<BubbleTreeResponse>> getBubbleTreeForDefaultPath(UUID workspaceId, Integer depth) {
@@ -130,6 +169,12 @@ public class BubbleService {
     }
 
     public PutCapsule putBubble(PutRequest request, String path, UUID workspaceId) {
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
+
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate user");
+        }
         Bubble bubble = bubbleRepository.findByPathAndWorkspaceId(path, workspaceId)
                 .orElseThrow(() -> new BubbleNotFoundException("Bubble Not Found"));
 
@@ -198,6 +243,14 @@ public class BubbleService {
     }
 
     public void moveBubble(PutMoveRequest request, String oldPath, UUID workspaceId) {
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
+
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate user");
+        }
+
+
         Bubble bubble = bubbleRepository.findByPathAndWorkspaceId(oldPath, workspaceId)
                 .orElseThrow(() -> new BubbleNotFoundException("Bubble Not Found"));
 
@@ -260,4 +313,7 @@ public class BubbleService {
         return new BubbleTreeResponse(bubble.getName(), childrenResponses);
     }
 
+    private int countOccurrences (String str,char character){
+        return (int) str.chars().filter(ch -> ch == character).count();
+    }
 }

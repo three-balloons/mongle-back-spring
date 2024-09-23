@@ -13,10 +13,10 @@ import java.util.List;
 public class BubbleInfoResponse {
     private final String name;
     private final String path;
-    private final int top;
-    private final int left;
-    private final int width;
-    private final int height;
+    private final Integer top;
+    private final Integer left;
+    private final Integer width;
+    private final Integer height;
 
     @JsonProperty("isVisible")
     private final boolean visible;

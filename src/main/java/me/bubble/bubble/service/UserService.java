@@ -35,7 +35,8 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    public UserResponse findUserByOauthId(String oAuthId) {
+    public UserResponse findUserByOauthId() {
+        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
         User user = userRepository.findByOauthId(oAuthId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         return new UserResponse(user);

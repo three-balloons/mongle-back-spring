@@ -24,8 +24,7 @@ public class UserApiController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json"))
     })
     public ApiResponse<UserResponse> getUser() {
-        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
-        UserResponse user = userService.findUserByOauthId(oAuthId);
+        UserResponse user = userService.findUserByOauthId();
         return ApiResponse.<UserResponse>builder()
                 .code("OK")
                 .message("")
@@ -40,7 +39,6 @@ public class UserApiController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json"))
     })
     public ApiResponse<UserResponse> putUser(@RequestBody PutUserRequest request) {
-
         UserResponse user = userService.updateUserNameAndEmail(request);
         return ApiResponse.<UserResponse>builder()
                 .code("OK")

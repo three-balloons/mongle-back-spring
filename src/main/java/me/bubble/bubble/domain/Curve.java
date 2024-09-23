@@ -25,7 +25,7 @@ public class Curve {
     private String color;
 
     @Column(name = "thickness")
-    private int thickness;
+    private Integer thickness;
 
     @Column(name = "control_point")
     private String controlPoint;
@@ -36,14 +36,14 @@ public class Curve {
     private Bubble bubble;
 
     @Builder
-    public Curve(String color, int thickness, Bubble bubble, String controlPoint) {
+    public Curve(String color, Integer thickness, Bubble bubble, String controlPoint) {
         this.color = color;
         this.thickness = thickness;
         this.bubble = bubble;
         this.controlPoint = controlPoint;
     }
 
-    public void update(String color, int thickness, Bubble bubble, String controlPoint) {
+    public void update(String color, Integer thickness, Bubble bubble, String controlPoint) {
         this.color = color;
         this.thickness = thickness;
         this.bubble = bubble;

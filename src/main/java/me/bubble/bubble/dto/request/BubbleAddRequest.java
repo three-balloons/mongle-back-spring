@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 public class BubbleAddRequest {
     private String name;
-    private int top;
-    private int left;
-    private int height;
-    private int width;
+    private Integer top;
+    private Integer left;
+    private Integer height;
+    private Integer width;
     private boolean isVisible;
     private boolean isBubblized;
 }
