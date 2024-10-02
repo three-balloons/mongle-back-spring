@@ -1,5 +1,6 @@
 package me.bubble.bubble.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ public class BubbleAddRequest {
     private Integer left;
     private Integer height;
     private Integer width;
-    private boolean isVisible;
-    private boolean isBubblized;
+    @JsonProperty("isVisible")
+    private boolean visible;
+    @JsonProperty("isBubblized")
+    private boolean bubblized;
 }
