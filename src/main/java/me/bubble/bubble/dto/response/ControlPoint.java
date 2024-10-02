@@ -1,11 +1,14 @@
 package me.bubble.bubble.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
 public class ControlPoint {
     private final int x;
     private final int y;
+
+    @JsonProperty("isVisible")
     private final boolean visible;
 
     public ControlPoint() {

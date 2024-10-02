@@ -250,7 +250,6 @@ public class BubbleService {
             throw new InappropriateUserException("Inappropriate user");
         }
 
-
         Bubble bubble = bubbleRepository.findByPathAndWorkspaceId(oldPath, workspaceId)
                 .orElseThrow(() -> new BubbleNotFoundException("Bubble Not Found"));
 
@@ -278,7 +277,6 @@ public class BubbleService {
 
             bubbleRepository.save(bubble);
         }
-        return;
     }
 
     private BubbleInfoResponse buildBubbleResponse(Bubble bubble) {
