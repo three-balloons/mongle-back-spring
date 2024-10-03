@@ -51,19 +51,6 @@ public class BubbleService {
         }
     }
 
-    @Transactional
-    public void deleteByPathStartingWithAndWorkspaceId(String path, UUID workspaceId) {
-        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-        if (!userOAuthId.equals(workspaceOAuthId)) {
-            throw new InappropriateUserException("Inappropriate User");
-        }
-        if (path.endsWith("/")) {
-            throw new InappropriatePathException("Inappropriate path");
-        }
-        bubbleRepository.deleteByPathStartingWithAndWorkspaceId(path, workspaceId);
-    }
-
     public List<BubbleInfoResponse> getBubblesByWorkspaceAndPathAndPathDepth(UUID workspaceId, String path, Integer pathDepth) {
         String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
 
@@ -246,6 +233,19 @@ public class BubbleService {
 
         PutResponse putResponse = new PutResponse(deleteList, updateList, createList);
         return new PutCapsule(putResponse, responseMessage);
+    }
+
+    @Transactional
+    public void deleteByPathStartingWithAndWorkspaceId(String path, UUID workspaceId) {
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate User");
+        }
+        if (path.endsWith("/")) {
+            throw new InappropriatePathException("Inappropriate path");
+        }
+        bubbleRepository.deleteByPathStartingWithAndWorkspaceId(path, workspaceId);
     }
 
     public void moveBubble(PutMoveRequest request, String oldPath, UUID workspaceId) {

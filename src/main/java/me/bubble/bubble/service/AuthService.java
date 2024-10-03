@@ -42,6 +42,20 @@ public class AuthService {
     Base64.Decoder decoder = Base64.getDecoder();
     JsonParser jsonParser = new BasicJsonParser();
 
+    public AccessTokenResponse getTestAccessTokenResponse(AccessTokenRequest request) {
+        if (request.getProvider().equals("String") && request.getCode().equals("String") && request.getRedirect_uri().equals("String")) {
+            String[] result = new String[3];
+            result[0] = "MongleTestAccount";
+            result[1] = null;
+            result[2] = "MongleTestAccount";
+
+            String accessToken = CheckAndSaveUserAndReturnToken(request.getProvider(), result);
+
+            return new AccessTokenResponse(accessToken);
+        }
+
+        throw new RuntimeException("Exception while TestAccount Login");
+    }
     public AccessTokenResponse getAccessTokenResponse(AccessTokenRequest request) {
         if (request.getProvider().equals("KAKAO")) {
             String accessToken = getKakaoAccessToken(request);

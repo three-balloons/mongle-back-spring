@@ -27,4 +27,13 @@ public class AuthApiController {
     }
 
 
+    @PostMapping("/api/auth/test")
+    public ApiResponse<AccessTokenResponse> getTestAccessToken(@RequestBody AccessTokenRequest request) {
+        AccessTokenResponse accessTokenResponse = authService.getTestAccessTokenResponse(request);
+        return ApiResponse.<AccessTokenResponse>builder()
+                .code("OK")
+                .message("")
+                .data(accessTokenResponse)
+                .build();
+    }
 }
