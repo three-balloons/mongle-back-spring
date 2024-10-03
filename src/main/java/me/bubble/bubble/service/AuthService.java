@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.bubble.bubble.config.jwt.JwtTokenProvider;
 import me.bubble.bubble.domain.User;
 import me.bubble.bubble.dto.request.AccessTokenRequest;
+import me.bubble.bubble.dto.request.TestUserCreateRequest;
 import me.bubble.bubble.dto.response.AccessTokenResponse;
 import me.bubble.bubble.dto.response.OAuthResponseDto;
 import me.bubble.bubble.exception.InappropriatePayloadException;
@@ -42,20 +43,20 @@ public class AuthService {
     Base64.Decoder decoder = Base64.getDecoder();
     JsonParser jsonParser = new BasicJsonParser();
 
-    public AccessTokenResponse getTestAccessTokenResponse(AccessTokenRequest request) {
-        if (request.getProvider().equals("String") && request.getCode().equals("String") && request.getRedirect_uri().equals("String")) {
-            String[] result = new String[3];
-            result[0] = "MongleTestAccount";
-            result[1] = null;
-            result[2] = "MongleTestAccount";
+    public AccessTokenResponse getTestAccessTokenResponse(TestUserCreateRequest request) {
+        if (!request.getOauth_id().equals("String") || !request.getProvider().equals("String") ||
+        !request.getName().equals("String"))
+            throw new RuntimeException("Exception While Test Login");
 
-            String accessToken = CheckAndSaveUserAndReturnToken(request.getProvider(), result);
+        String[] result = new String[3];
+        result[0] = request.getOauth_id();
+        result[1] = null;
+        result[2] = request.getName();
 
-            return new AccessTokenResponse(accessToken);
-        }
-
-        throw new RuntimeException("Exception while TestAccount Login");
+        String accessToken = CheckAndSaveUserAndReturnToken(request.getProvider(), result);
+        return new AccessTokenResponse(accessToken);
     }
+
     public AccessTokenResponse getAccessTokenResponse(AccessTokenRequest request) {
         if (request.getProvider().equals("KAKAO")) {
             String accessToken = getKakaoAccessToken(request);

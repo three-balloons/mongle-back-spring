@@ -3,6 +3,7 @@ package me.bubble.bubble.controller;
 import lombok.RequiredArgsConstructor;
 import me.bubble.bubble.config.jwt.JwtTokenProvider;
 import me.bubble.bubble.dto.request.AccessTokenRequest;
+import me.bubble.bubble.dto.request.TestUserCreateRequest;
 import me.bubble.bubble.dto.response.AccessTokenResponse;
 import me.bubble.bubble.dto.response.ApiResponse;
 import me.bubble.bubble.service.AuthService;
@@ -28,7 +29,7 @@ public class AuthApiController {
 
 
     @PostMapping("/api/auth/test")
-    public ApiResponse<AccessTokenResponse> getTestAccessToken(@RequestBody AccessTokenRequest request) {
+    public ApiResponse<AccessTokenResponse> getTestAccessToken(@RequestBody TestUserCreateRequest request) {
         AccessTokenResponse accessTokenResponse = authService.getTestAccessTokenResponse(request);
         return ApiResponse.<AccessTokenResponse>builder()
                 .code("OK")
