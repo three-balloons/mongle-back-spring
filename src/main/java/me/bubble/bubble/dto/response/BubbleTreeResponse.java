@@ -1,14 +1,16 @@
 package me.bubble.bubble.dto.response;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Setter
 public class BubbleTreeResponse {
-    private final String name;
-    private final List<BubbleTreeResponse> children;
+    private String name;
+    private List<BubbleTreeResponse> children;
 
     public BubbleTreeResponse (String name, List<BubbleTreeResponse> children) {
         this.name = name;
