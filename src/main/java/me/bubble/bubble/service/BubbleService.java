@@ -72,10 +72,16 @@ public class BubbleService {
             throw new InappropriateUserException("Inappropriate User");
         }
 
-        if (pathDepth < 1 || pathDepth > 5) {
+        if ((pathDepth != -1) && (pathDepth < 1 || pathDepth > 5)) {
             throw new InappropriateDepthException("Inappropriate Depth");
         }
-        List<Bubble> bubbles =  bubbleRepository.findByWorkspaceIdAndPathStartsWithAndPathDepthLessThanEqualOrderByPathDepthAsc(workspaceId, path, pathDepth);
+
+        List<Bubble> bubbles;
+        if (pathDepth == -1) { // -1이면 모든 버블 다 보고 pathDepth 오름차순으로 정리
+            bubbles = bubbleRepository.findByWorkspaceIdAndPathStartsWithOrderByPathDepthAsc(workspaceId, path);
+        } else { // depth가 주어진 경우, depth보다 작은 버블 보고 pathDepth 오름차순으로 정리
+            bubbles =  bubbleRepository.findByWorkspaceIdAndPathStartsWithAndPathDepthLessThanEqualOrderByPathDepthAsc(workspaceId, path, pathDepth);
+        }
         if (bubbles.isEmpty() && !path.equals("/")) {
             throw new InappropriatePathException("Inappropriate Path");
         }

@@ -17,4 +17,6 @@ public interface BubbleRepository extends JpaRepository<Bubble, Long> {
     List<Bubble> findByPathDepthAndPathStartingWithAndWorkspaceId(int pathDepth, String path, UUID workspaceId);
     List<Bubble> findByPathDepthAndWorkspaceId(int pathDepth, UUID workspaceId);
     List<Bubble> findByWorkspaceAndPathStartingWith(Workspace workspace, String path);
+    List<Bubble> findByWorkspaceIdAndPathStartsWithOrderByPathDepthAsc(UUID workspaceId, String path);
+
 }

@@ -31,7 +31,7 @@ public class BubbleApiController {
     })
     public ApiResponse<List<BubbleInfoResponse>> getBubble(@PathVariable("workspaceId") UUID workspaceId,
                                                            @RequestParam(required = true) String path,
-                                                           @RequestParam(required = false, defaultValue = "1") Integer depth) {
+                                                           @RequestParam(required = false, defaultValue = "-1") Integer depth) {
         List<BubbleInfoResponse> bubbles = bubbleService.getBubblesByWorkspaceAndPathAndPathDepth(workspaceId, path, depth);
         return ApiResponse.<List<BubbleInfoResponse>>builder()
                 .code("OK")
