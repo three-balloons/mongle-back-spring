@@ -44,10 +44,6 @@ public class AuthService {
     JsonParser jsonParser = new BasicJsonParser();
 
     public AccessTokenResponse getTestAccessTokenResponse(TestUserCreateRequest request) {
-        if (!request.getOauth_id().equals("String") || !request.getProvider().equals("String") ||
-        !request.getName().equals("String"))
-            throw new RuntimeException("Exception While Test Login");
-
         String[] result = new String[3];
         result[0] = request.getOauth_id();
         result[1] = null;
