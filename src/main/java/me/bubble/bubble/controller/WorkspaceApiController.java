@@ -101,6 +101,20 @@ public class WorkspaceApiController {
                     .build();
     }
 
+    @PatchMapping("/{workspaceId}/restore")
+    @Operation(summary = "삭제된 워크스페이스 복구하기", description = "워크스페이스 복구하기")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json")),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(NOT_EXIST)", description = "code: \"NOT_EXIST\", message: \"해당 워크스페이스가 존재하지 않습니다.\" ", content = @Content(mediaType = "application/json"))
+    })
+    public ApiResponse<Void> restoreWorkspace (@PathVariable UUID workspaceId) {
+        workspaceService.restoreDeletedAt(workspaceId);
+        return ApiResponse.<Void>builder()
+                .code("OK")
+                .message("")
+                .data(null)
+                .build();
+    }
     @PostMapping()
     @Operation(summary = "워크스페이스 생성하기", description = "워크스페이스 생성하기")
     @ApiResponses(value = {

@@ -109,6 +109,18 @@ public class WorkspaceService {
         workspaceRepository.save(workspace);
     }
 
+    public void restoreDeletedAt(UUID workspaceId) {
+        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException("Workspace Not Found " + workspaceId));
+        if (!oAuthId.equals(workspace.getUser().getOauthId())) {
+            throw new InappropriateUserException("Inappropriate user");
+        }
+
+        workspace.setDeletedAt(null);
+
+        workspaceRepository.save(workspace);
+    }
     public String getOAuthIdByWorkspaceId(UUID workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException("Workspace Not Found " + workspaceId));
