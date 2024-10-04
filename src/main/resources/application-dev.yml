@@ -1,10 +1,10 @@
 # 로컬에서 돌릴 때는 주석 처리 후 실행
-#server:
-#  port: ${SERVER_PORT}
-#  ssl:
-#    key-store-password: ${SSL_PASSWORD}
-#    key-store: classpath:ssl/keystore.p12
-#    key-store-type: PKCS12
+server:
+  port: ${SERVER_PORT}
+  ssl:
+    key-store-password: ${SSL_PASSWORD}
+    key-store: classpath:ssl/keystore.p12
+    key-store-type: PKCS12
 
 spring:
   config:
