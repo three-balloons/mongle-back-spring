@@ -161,4 +161,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ExceptionHandler(PathTooLongException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePathTooLongException (PathTooLongException pathTooLongException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("PATH_TOO_LONG")
+                .message("Path는 255자 이상이어서는 안됩니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

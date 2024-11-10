@@ -139,6 +139,24 @@ public class BubbleApiController {
                 .message("")
                 .data(null)
                 .build();
+    }
 
+    @PutMapping("/{workspaceId}/changeName")
+    @Operation(summary = "버블 이름 바꾸기", description = "버블의 이름 바꾸기")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\"", content = @Content(mediaType = "application/json"))
+    })
+    @Parameters({
+            @Parameter(name = "path", description = "버블의 path", example = "/ws1/A", required = true)
+    })
+    public ApiResponse<BubbleInfoResponse> changeBubbleName (@PathVariable UUID workspaceId,
+                                         @RequestParam(required = true) String path,
+                                         @RequestBody ChangeNameRequest request) {
+        BubbleInfoResponse bubbleInfoResponse = bubbleService.changeBubbleName(request, path, workspaceId);
+        return ApiResponse.<BubbleInfoResponse>builder() // Workspace는 적절히 주어진다고 가정.
+                .code("OK")
+                .message("")
+                .data(bubbleInfoResponse)
+                .build();
     }
 }

@@ -56,6 +56,10 @@ public class BubbleService {
 
     public BubbleInfoResponse addBubble(String path, UUID workspaceId, BubbleAddRequest request) {
         // 해당 workspace 가져온다.
+        if (path.length() > 255) {
+            throw new PathTooLongException("Path Too Long");
+        }
+
         Workspace workspace = workspaceService.findWorkspaceEntityById(workspaceId);
 
         String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
@@ -201,6 +205,29 @@ public class BubbleService {
         bubbleRepository.deleteByPathStartingWithAndWorkspaceId(path, workspaceId);
     }
 
+    public BubbleInfoResponse changeBubbleName(ChangeNameRequest request, String path, UUID workspaceId) {
+        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
+
+        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
+        if (!userOAuthId.equals(workspaceOAuthId)) {
+            throw new InappropriateUserException("Inappropriate user");
+        }
+
+        Bubble bubble = bubbleRepository.findByPathAndWorkspaceId(path, workspaceId)
+                .orElseThrow(() -> new BubbleNotFoundException("Bubble Not Found"));
+
+        bubble.update(request.getName(), bubble.getTop(), bubble.getLeftmost(), bubble.getWidth(), bubble.getHeight(), path, bubble.getPathDepth(),
+                     bubble.isBubblized(), bubble.isVisible(), bubble.getWorkspace());
+        Bubble savedBubble = bubbleRepository.save(bubble);
+
+        List<CurveInfoResponse> curves = new ArrayList<>();
+        for (Curve curve : curveService.findCurvesByBubble(bubble)) {
+            curves.add(new CurveInfoResponse(curve));
+        }
+
+        return new BubbleInfoResponse(savedBubble, curves);
+    }
+
     public void moveBubble(PutMoveRequest request, String oldPath, UUID workspaceId) {
         String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
 
@@ -212,30 +239,28 @@ public class BubbleService {
         Bubble bubble = bubbleRepository.findByPathAndWorkspaceId(oldPath, workspaceId)
                 .orElseThrow(() -> new BubbleNotFoundException("Bubble Not Found"));
 
-        if (request.getNewPath().isEmpty()) {
-            bubble.update(request.getName(), request.getTop(), request.getLeft(), request.getWidth(), request.getHeight(), oldPath, bubble.getPathDepth(),
-                    request.isBubblized(), request.isVisible(), bubble.getWorkspace());
-            bubbleRepository.save(bubble);
-        } else {
-            int oldPathSlashCount = countOccurrences(oldPath, '/');
-            //oldPath로 시작하는 모든 버블들, 즉 해당 버블과 그 자녀들을 가져온다.
-            List<Bubble> bubbles = bubbleRepository.findByWorkspaceAndPathStartingWith(bubble.getWorkspace(), oldPath);
-            for (Bubble tempBubble : bubbles) {
-                int newPathSlashCount = countOccurrences(request.getNewPath(), '/');
-                int slashCountDifference = newPathSlashCount - oldPathSlashCount;
+        int oldPathSlashCount = countOccurrences(oldPath, '/');
+        //oldPath로 시작하는 모든 버블들, 즉 해당 버블과 그 자녀들을 가져온다.
+        List<Bubble> bubbles = bubbleRepository.findByWorkspaceAndPathStartingWith(bubble.getWorkspace(), oldPath);
+        for (Bubble tempBubble : bubbles) {
+            int newPathSlashCount = countOccurrences(request.getNewPath(), '/');
+            int slashCountDifference = newPathSlashCount - oldPathSlashCount;
 
-                String currentPath = tempBubble.getPath();
-                // path 부분을 newPath로 변경
-                String updatedPath = currentPath.replaceFirst(oldPath, request.getNewPath());
-                tempBubble.setPath(updatedPath);
-                tempBubble.setPathDepth(tempBubble.getPathDepth() + slashCountDifference);
+            String currentPath = tempBubble.getPath();
+            // path 부분을 newPath로 변경
+            String updatedPath = currentPath.replaceFirst(oldPath, request.getNewPath());
+
+            if (updatedPath.length() > 255) {
+                throw new PathTooLongException("Path Too Long");
             }
-            bubbleRepository.saveAll(bubbles);
-            bubble.update(request.getName(), request.getTop(), request.getLeft(), request.getWidth(), request.getHeight(), request.getNewPath(), countOccurrences(request.getNewPath(), '/'),
-                        request.isBubblized(), request.isVisible(), bubble.getWorkspace());
-
-            bubbleRepository.save(bubble);
+            tempBubble.setPath(updatedPath);
+            tempBubble.setPathDepth(tempBubble.getPathDepth() + slashCountDifference);
         }
+        bubbleRepository.saveAll(bubbles);
+        bubble.update(bubble.getName(), request.getTop(), request.getLeft(), request.getWidth(), request.getHeight(), request.getNewPath(), countOccurrences(request.getNewPath(), '/'),
+                    request.isBubblized(), request.isVisible(), bubble.getWorkspace());
+
+        bubbleRepository.save(bubble);
     }
 
     private BubbleInfoResponse buildBubbleResponse(Bubble bubble) {

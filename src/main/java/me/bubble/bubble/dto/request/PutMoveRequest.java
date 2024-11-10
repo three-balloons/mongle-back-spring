@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PutMoveRequest {
     private String newPath;
-    private String name;
     private Integer top;
     private Integer left;
     private Integer height;
