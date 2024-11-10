@@ -10,10 +10,12 @@ import java.util.List;
 @Setter
 public class BubbleTreeResponse {
     private String name;
+    private String path;
     private List<BubbleTreeResponse> children;
 
-    public BubbleTreeResponse (String name, List<BubbleTreeResponse> children) {
+    public BubbleTreeResponse (String name, String path, List<BubbleTreeResponse> children) {
         this.name = name;
+        this.path = path;
         this.children = children == null ? Collections.emptyList() : Collections.unmodifiableList(children);
     }
 }

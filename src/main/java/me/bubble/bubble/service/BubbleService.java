@@ -250,79 +250,6 @@ public class BubbleService {
     private int countOccurrences (String str,char character){
         return (int) str.chars().filter(ch -> ch == character).count();
     }
-//
-//
-//    private BubbleTreeResponse buildBubbleTreeResponse(Bubble bubble, int depth, UUID workspaceId) {
-//        if (depth == 0 || bubble == null) {
-//            return new BubbleTreeResponse(bubble.getName(), null);
-//        }
-//
-//        List<BubbleTreeResponse> childrenResponses = new ArrayList<>();
-//        for (Bubble child : bubbleRepository.findByPathDepthAndPathStartingWithAndWorkspaceId(bubble.getPathDepth() + 1, bubble.getPath(), workspaceId)) {
-//            childrenResponses.add(buildBubbleTreeResponse(child, depth-1, workspaceId));
-//        }
-//        return new BubbleTreeResponse(bubble.getName(), childrenResponses);
-//    }
-//
-//    public BubbleTreeCapsule getBubbleTree(String path, UUID workspaceId, Integer depth) {
-//        String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
-//
-//        String userOAuthId = SecurityUtil.getCurrentUserOAuthId();
-//        if (!userOAuthId.equals(workspaceOAuthId)) {
-//            throw new InappropriateUserException("Inappropriate user");
-//        }
-//        if (depth < -1 || depth == 0) {
-//            throw new InappropriateDepthException("Inappropriate depth");
-//        }
-//        Bubble bubble = bubbleRepository.findTopByWorkspaceIdOrderByPathDepthDesc(workspaceId)
-//                .orElseThrow(() -> new NoBubbleInWorkspaceException("No Bubble In Workspace " + workspaceId));
-//        Integer max_depth = bubble.getPathDepth();
-//
-//        if (depth == -1) { // depth 기본값을 pathDepth의 최대값으로
-//            depth = max_depth;
-//        }
-//
-//        if (!path.equals("/")) { //특정 path로 요청했을 경우
-//            List<BubbleTreeResponse> bubbleTreeResponse = getBubbleTreeForPath(path, workspaceId, depth);
-//            return new BubbleTreeCapsule(bubbleTreeResponse, "특정 Path로의 요청");
-//        } else { // 기본 path로의 요청
-//            //pathDepth가 1인 버블 객체를 가져온 후
-//            List<List<BubbleTreeResponse>> bubbleTreeResponse = getBubbleTreeForDefaultPath(workspaceId, depth);
-//            return new BubbleTreeCapsule(bubbleTreeResponse, "기본 Path로의 요청");
-//        }
-//    }
-//    public List<BubbleTreeResponse> getBubbleTreeForPath(String path, UUID workspaceId, Integer depth) {
-//        Bubble bubble = bubbleRepository.findByPathAndWorkspaceId(path, workspaceId)
-//                .orElseThrow(() -> new BubbleNotFoundException("Bubble Not Found")); //해당 workspace의 특정 path에 해당하는 bubble 찾는다.
-//
-//        //그 bubble에 대한 응답 객체 생성
-//        List<BubbleTreeResponse> bubbleTreeResponse = buildBubbleTreeResponseList(bubble, workspaceId, depth);
-//
-//        return bubbleTreeResponse;
-//    }
-//
-//    public List<List<BubbleTreeResponse>> getBubbleTreeForDefaultPath(UUID workspaceId, Integer depth) {
-//        List<Bubble> bubbles = bubbleRepository.findByPathDepthAndWorkspaceId(1, workspaceId);
-//        List<List<BubbleTreeResponse>> bubbleTreeResponses = new ArrayList<>();
-//
-//        for (Bubble bubble: bubbles) {
-//            //그 버블들에 대한 응답 객체를 만든다.
-//            bubbleTreeResponses.add(buildBubbleTreeResponseList(bubble, workspaceId, depth));
-//        }
-//
-//        return bubbleTreeResponses;
-//    }
-//
-//    private List<BubbleTreeResponse> buildBubbleTreeResponseList(Bubble bubble, UUID workspaceId, int depth) {
-//        if (depth == 0 || bubble == null) {
-//            return Collections.emptyList();
-//        }
-//
-//        List<BubbleTreeResponse> bubbleTreeResponses = new ArrayList<>();
-//        bubbleTreeResponses.add(buildBubbleTreeResponse(bubble, depth, workspaceId));
-//
-//        return bubbleTreeResponses;
-//    }
 
     public BubbleTreeCapsule getBubbleTree(String path, UUID workspaceId, Integer depth) {
         String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
@@ -369,7 +296,7 @@ public class BubbleService {
     }
 
     private BubbleTreeResponse buildBubbleTreeForRoot(Bubble root, List<Bubble> allBubbles) {
-        BubbleTreeResponse rootResponse = new BubbleTreeResponse(root.getName(), null);
+        BubbleTreeResponse rootResponse = new BubbleTreeResponse(root.getName(), root.getPath(),null);
 
         // 현재 root bubble의 path 다음 깊이의 자식 버블들을 찾아 트리 구조에 추가
         List<BubbleTreeResponse> children = allBubbles.stream()
@@ -384,7 +311,7 @@ public class BubbleService {
 
     private BubbleTreeResponse buildBubbleTree(Bubble rootBubble, List<Bubble> allBubbles) {
         // BubbleTreeResponse는 트리의 노드를 나타냄
-        BubbleTreeResponse rootResponse = new BubbleTreeResponse(rootBubble.getName(), null);
+        BubbleTreeResponse rootResponse = new BubbleTreeResponse(rootBubble.getName(), rootBubble.getPath(), null);
 
         // 현재 rootBubble의 path 다음 깊이의 자식 버블들을 찾아 트리 구조에 추가
         List<BubbleTreeResponse> children = allBubbles.stream()
