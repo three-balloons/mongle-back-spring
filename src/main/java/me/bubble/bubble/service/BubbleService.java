@@ -295,7 +295,7 @@ public class BubbleService {
         }
 
         if (bubbles.isEmpty()) {
-            throw new BubbleNotFoundException("Bubble Not Found");
+            return new BubbleTreeCapsule(new ArrayList<>(), "버블이 없습니다.");
         }
 
         // 특정 path 요청인 경우
