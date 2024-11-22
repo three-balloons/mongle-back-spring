@@ -94,6 +94,7 @@ public class AuthService {
         return CheckAndSaveUserAndReturnToken(request.getProvider(), info);
 
     }
+
     private String[] getInfoFromIdToken(String idToken, String provider) {
         final String payloadJwt = idToken.split("\\.")[1];
         byte[] payload = decoder.decode(payloadJwt);
