@@ -12,12 +12,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PutMoveRequest {
     private String newPath;
-    private Integer top;
-    private Integer left;
-    private Integer height;
-    private Integer width;
-    @JsonProperty("isBubblized")
-    private boolean bubblized;
-    @JsonProperty("isVisible")
-    private boolean visible;
 }

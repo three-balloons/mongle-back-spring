@@ -58,29 +58,29 @@ public class BubbleApiController {
                 .build();
     }
 
-    @GetMapping("/tree/{workspaceId}")
-    @Operation(summary = "버블 트리 가져오기", description = "Workspace 내의 bubble 트리 구조 가져오기")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK_1)", description = "code: \"OK\", message: \"특정 path로의 요청\"", content = @Content(mediaType = "application/json")),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK_2)", description = "code: \"OK\", message: \"기본 path('/')로의 요청\"", content = @Content(mediaType = "application/json"))
-    })
-    @Parameters({
-            @Parameter(name = "path", description = "버블의 path (path가 없을 시 workspace 내 전체 트리 반환)", example = "/ws1/A"),
-            @Parameter(name = "depth", description = "탐색을 원하는 깊이 (기본값: 가장 깊은 버블까지)", example = "3"),
-    })
-    // <?>: 어떤 자료형의 객체도 매개변수로 받겠다는 의미
-    public ApiResponse<List<?>> getBubbleTree(@PathVariable UUID workspaceId,
-                                        @RequestParam(required = false, defaultValue = "/") String path,
-                                        @RequestParam(required = false, defaultValue = "-1") Integer depth)
-    // RequestedParam 내부에는 정적이 값이 들어가야해서 음수로 설정 후 밑에서 음수일 경우 기본값을 바꿔주는 형식으로 구현
-    {
-        BubbleTreeCapsule treeResponse = bubbleService.getBubbleTree(path, workspaceId, depth);
-        return ApiResponse.<List<?>>builder()
-                .code("OK")
-                .message(treeResponse.message())
-                .data(treeResponse.bubbleTreeResponse())
-                .build();
-    }
+//    @GetMapping("/tree/{workspaceId}")
+//    @Operation(summary = "버블 트리 가져오기", description = "Workspace 내의 bubble 트리 구조 가져오기")
+//    @ApiResponses(value = {
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK_1)", description = "code: \"OK\", message: \"특정 path로의 요청\"", content = @Content(mediaType = "application/json")),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK_2)", description = "code: \"OK\", message: \"기본 path('/')로의 요청\"", content = @Content(mediaType = "application/json"))
+//    })
+//    @Parameters({
+//            @Parameter(name = "path", description = "버블의 path (path가 없을 시 workspace 내 전체 트리 반환)", example = "/ws1/A"),
+//            @Parameter(name = "depth", description = "탐색을 원하는 깊이 (기본값: 가장 깊은 버블까지)", example = "3"),
+//    })
+//    // <?>: 어떤 자료형의 객체도 매개변수로 받겠다는 의미
+//    public ApiResponse<List<?>> getBubbleTree(@PathVariable UUID workspaceId,
+//                                        @RequestParam(required = false, defaultValue = "/") String path,
+//                                        @RequestParam(required = false, defaultValue = "-1") Integer depth)
+//    // RequestedParam 내부에는 정적이 값이 들어가야해서 음수로 설정 후 밑에서 음수일 경우 기본값을 바꿔주는 형식으로 구현
+//    {
+//        BubbleTreeCapsule treeResponse = bubbleService.getBubbleTree(path, workspaceId, depth);
+//        return ApiResponse.<List<?>>builder()
+//                .code("OK")
+//                .message(treeResponse.message())
+//                .data(treeResponse.bubbleTreeResponse())
+//                .build();
+//    }
 
     @PostMapping("/{workspaceId}")
     @Operation(summary = "버블 생성하기", description = "버블 생성하기")
@@ -141,18 +141,18 @@ public class BubbleApiController {
                 .build();
     }
 
-    @PutMapping("/{workspaceId}/changeName")
-    @Operation(summary = "버블 이름 바꾸기", description = "버블의 이름 바꾸기")
+    @PutMapping("/{workspaceId}/change_info")
+    @Operation(summary = "버블 정보 바꾸기", description = "버블의 정보 바꾸기")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\"", content = @Content(mediaType = "application/json"))
     })
     @Parameters({
             @Parameter(name = "path", description = "버블의 path", example = "/ws1/A", required = true)
     })
-    public ApiResponse<BubbleInfoResponse> changeBubbleName (@PathVariable UUID workspaceId,
+    public ApiResponse<BubbleInfoResponse> changeBubbleInfo (@PathVariable UUID workspaceId,
                                          @RequestParam(required = true) String path,
-                                         @RequestBody ChangeNameRequest request) {
-        BubbleInfoResponse bubbleInfoResponse = bubbleService.changeBubbleName(request, path, workspaceId);
+                                         @RequestBody ChangeInfo request) {
+        BubbleInfoResponse bubbleInfoResponse = bubbleService.changeInfo(request, path, workspaceId);
         return ApiResponse.<BubbleInfoResponse>builder() // Workspace는 적절히 주어진다고 가정.
                 .code("OK")
                 .message("")
