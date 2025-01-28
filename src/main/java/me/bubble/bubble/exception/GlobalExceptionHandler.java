@@ -171,4 +171,70 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @ExceptionHandler(FileDownloadFailedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleFileDownloadFailedException(FileDownloadFailedException fileDownloadFailedException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("FILE_DOWNLOAD_FAILED")
+                .message("파일 다운로드 중 에러가 발생했습니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @ExceptionHandler(FileMoveException.class)
+    public ResponseEntity<ApiResponse<Void>> handleFileMoveException(FileMoveException fileMoveException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("FILE_MOVE_FAILED")
+                .message("파일을 이동 중 에러가 발생했습니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleFileNotFoundException(FileNotFoundException fileNotFoundException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("FILE_NOT_FOUND")
+                .message("파일을 찾지 못하였습니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(FileNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleFileNotSupportedException(FileNotSupportedException fileNotSupportedException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("FILE_NOT_SUPPORTED")
+                .message("지원하지 않는 파일 형식입니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(FileUploadFailedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleFileUploadFailedException(FileUploadFailedException fileUploadFailedException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("FILE_UPLOAD_FAILED")
+                .message("파일 업로드 중 에러가 발생하였습니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(TempFileAccessedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTempFileAccessedException(TempFileAccessedException tempFileAccessedException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("TEMP_FILE_ACCESSED")
+                .message("임시 파일은 조회할 수 없습니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
