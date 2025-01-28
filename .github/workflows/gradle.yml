@@ -23,7 +23,10 @@ jobs:
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
       KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
-      
+      IAM_ACCESS_KEY: ${{ secrets.IAM_ACCESS_KEY }}
+      IAM_SECRET_KEY: ${{ secrets.IAM_SECRET_KEY }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+
     permissions:
       contents: read
       
