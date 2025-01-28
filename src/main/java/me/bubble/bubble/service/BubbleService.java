@@ -3,6 +3,7 @@ package me.bubble.bubble.service;
 import lombok.RequiredArgsConstructor;
 import me.bubble.bubble.domain.Bubble;
 import me.bubble.bubble.domain.Curve;
+import me.bubble.bubble.domain.File;
 import me.bubble.bubble.domain.Workspace;
 import me.bubble.bubble.dto.response.ControlPoint;
 import me.bubble.bubble.dto.response.PutResponseObject;
@@ -26,6 +27,7 @@ public class BubbleService {
     private final CurveService curveService;
     private final WorkspaceService workspaceService;
     private final WorkspaceRepository workspaceRepository;
+    private final FileService fileService;
 
     public List<BubbleInfoResponse> getBubblesByWorkspaceAndPathAndPathDepth(UUID workspaceId, String path, Integer pathDepth) {
         String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
@@ -96,7 +98,7 @@ public class BubbleService {
                         .visible(request.isVisible())
                         .build();
                 Bubble savedBubble = bubbleRepository.save(newBubble);
-                return new BubbleInfoResponse(savedBubble, null);
+                return new BubbleInfoResponse(savedBubble, null, null);
             }
         }
         else{
@@ -119,7 +121,7 @@ public class BubbleService {
                         .visible(request.isVisible())
                         .build();
                 Bubble savedBubble = bubbleRepository.save(newBubble);
-                return new BubbleInfoResponse(savedBubble, null);
+                return new BubbleInfoResponse(savedBubble, null, null);
             }
         }
     }
@@ -244,10 +246,15 @@ public class BubbleService {
             curves.add(new CurveInfoResponse(curve));
         }
 
+        List<PostFileResponse> files = new ArrayList<>();
+        for (File file : fileService.findFilesByBubble(savedBubble)) {
+            files.add(new PostFileResponse(file, savedBubble.getPath()));
+        }
+
         workspace.setUpdatedAt(LocalDateTime.now());
         workspaceRepository.save(workspace);
 
-        return new BubbleInfoResponse(savedBubble, curves);
+        return new BubbleInfoResponse(savedBubble, curves, files);
     }
 
     @Transactional
@@ -288,11 +295,15 @@ public class BubbleService {
 
     private BubbleInfoResponse buildBubbleResponse(Bubble bubble) {
         List<CurveInfoResponse> curveResponses = new ArrayList<>();
-
+        List<PostFileResponse> fileResponses = new ArrayList<>();
         for (Curve curve : curveService.findCurvesByBubble(bubble)) {
             curveResponses.add(new CurveInfoResponse(curve));
         }
-        return new BubbleInfoResponse(bubble, curveResponses);
+
+        for (File file : fileService.findFilesByBubble(bubble)) {
+            fileResponses.add(new PostFileResponse(file, bubble.getPath()));
+        }
+        return new BubbleInfoResponse(bubble, curveResponses, fileResponses);
     }
 
     private int countOccurrences (String str,char character){

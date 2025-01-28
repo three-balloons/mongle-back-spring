@@ -26,7 +26,8 @@ public interface BubbleRepository extends JpaRepository<Bubble, Long> {
                                                        @Param("path") String path);
 
     @Query("SELECT b FROM Bubble b WHERE b.workspace.id = :workspaceId AND " +
-            "(b.path = :path OR b.path LIKE CONCAT(:path, '/%')) AND b.pathDepth <= :pathDepth " +
+            "(b.path = :path OR b.path LIKE CASE WHEN :path = '/' THEN '/%' ELSE CONCAT(:path, '/%') END) " +
+            "AND b.pathDepth <= :pathDepth " +
             "ORDER BY b.pathDepth ASC")
     List<Bubble> findByWorkspaceIdAndPathWithExactStart(@Param("workspaceId") UUID workspaceId, @Param("path") String path, @Param("pathDepth") int pathDepth);
 

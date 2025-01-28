@@ -7,6 +7,10 @@ server:
     key-store-type: PKCS12
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   config:
     import: optional:file:.env[.properties]
   jpa:
@@ -47,3 +51,15 @@ jwt:
   issuer: ${JWT_ISSUER}
   secret_key: ${JWT_SECRET_KEY}
 
+# AWS S3
+cloud:
+  aws:
+    credentials:
+      access-key: ${IAM_ACCESS_KEY}
+      secret-key: ${IAM_SECRET_KEY}
+    region:
+      static: ap-northeast-2  # 버킷의 리전
+    s3:
+      bucket: ${BUCKET_NAME}   # 버킷 이름
+    stack:
+      auto: false

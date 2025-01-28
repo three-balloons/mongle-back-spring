@@ -25,7 +25,9 @@ public class BubbleInfoResponse {
     private final boolean bubblized;
 
     private final List<CurveInfoResponse> curves;
-    public BubbleInfoResponse(Bubble bubble, List<CurveInfoResponse> curves) {
+
+    private final List<PostFileResponse> files;
+    public BubbleInfoResponse(Bubble bubble, List<CurveInfoResponse> curves, List<PostFileResponse> files) {
         this.name = bubble.getName();
         this.path = bubble.getPath();
         this.top = bubble.getTop();
@@ -35,5 +37,6 @@ public class BubbleInfoResponse {
         this.visible = bubble.isVisible();
         this.bubblized = bubble.isBubblized();
         this.curves = curves == null ? Collections.emptyList() : Collections.unmodifiableList(curves);
+        this.files = files == null ? Collections.emptyList() : Collections.unmodifiableList(files);
     }
 }
