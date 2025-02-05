@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import me.bubble.bubble.domain.Bubble;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Getter
@@ -24,10 +26,8 @@ public class BubbleInfoResponse {
     @JsonProperty("isBubblized")
     private final boolean bubblized;
 
-    private final List<CurveInfoResponse> curves;
-
-    private final List<PostFileResponse> files;
-    public BubbleInfoResponse(Bubble bubble, List<CurveInfoResponse> curves, List<PostFileResponse> files) {
+    private final List<ShapeResponse> shapes;
+    public BubbleInfoResponse(Bubble bubble, List<CurveInfoResponse> curves, List<PictureResponse> files) {
         this.name = bubble.getName();
         this.path = bubble.getPath();
         this.top = bubble.getTop();
@@ -36,7 +36,15 @@ public class BubbleInfoResponse {
         this.height = bubble.getHeight();
         this.visible = bubble.isVisible();
         this.bubblized = bubble.isBubblized();
-        this.curves = curves == null ? Collections.emptyList() : Collections.unmodifiableList(curves);
-        this.files = files == null ? Collections.emptyList() : Collections.unmodifiableList(files);
+
+        List<ShapeResponse> mergedList = new ArrayList<>();
+        if (curves != null) mergedList.addAll(curves);
+        if (files != null) mergedList.addAll(files);
+
+        // updatedAt 기준 오름차순 정렬 (먼저 업데이트된 게 먼저)
+        mergedList.sort(Comparator.comparing(ShapeResponse::getUpdatedAt));
+
+        // 변경 불가능한 리스트로 저장
+        this.shapes = Collections.unmodifiableList(mergedList);
     }
 }

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,58 +18,29 @@ public class File {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "top")
-    private Integer top;
-
-    @Column(name = "leftmost")
-    private Integer leftmost;
-
-    @Column(name = "width")
-    private Integer width;
-
-    @Column(name = "height")
-    private Integer height;
-
     @Column(name = "path")
     private String path;
 
-    @Column(name = "isFlippedX")
-    private boolean isFlippedX;
+    @Column(name = "type")
+    private String type;
 
-    @Column(name = "isFlippedY")
-    private boolean isFlippedY;
+    @Column(name = "size")
+    private Double size;
 
-    @Column(name = "angle")
-    private Integer angle;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bubble_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Bubble bubble;
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Builder
-    public File(Integer top, Integer leftmost, Integer width, Integer height, String path, Boolean isFlippedX, Boolean isFlippedY, Integer angle, Bubble bubble) {
-        this.top = top;
-        this.leftmost = leftmost;
-        this.width = width;
-        this.height = height;
+    public File(String path, String type, Double size) {
         this.path = path;
-        this.isFlippedX = isFlippedX;
-        this.isFlippedY = isFlippedY;
-        this.angle = angle;
-        this.bubble = bubble;
+        this.type = type;
+        this.size = size;
     }
 
-    public void update(Integer top, Integer leftmost, Integer width, Integer height,  String path, Boolean isFlippedX, Boolean isFlippedY, Integer angle, Bubble bubble) {
-        this.top = top;
-        this.leftmost = leftmost;
-        this.width = width;
-        this.height = height;
+    public void update(String path, String type, Double size) {
         this.path = path;
-        this.isFlippedX = isFlippedX;
-        this.isFlippedY = isFlippedY;
-        this.angle = angle;
-        this.bubble = bubble;
+        this.type = type;
+        this.size = size;
     }
-
 }

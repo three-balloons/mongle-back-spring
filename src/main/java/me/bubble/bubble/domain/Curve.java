@@ -7,8 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,11 @@ public class Curve {
     @JoinColumn(name = "bubble_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Bubble bubble;
+
+    @CreatedDate
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Builder
     public Curve(String color, Integer thickness, Bubble bubble, String controlPoint) {

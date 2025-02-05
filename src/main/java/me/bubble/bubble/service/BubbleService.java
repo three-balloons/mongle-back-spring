@@ -1,10 +1,7 @@
 package me.bubble.bubble.service;
 
 import lombok.RequiredArgsConstructor;
-import me.bubble.bubble.domain.Bubble;
-import me.bubble.bubble.domain.Curve;
-import me.bubble.bubble.domain.File;
-import me.bubble.bubble.domain.Workspace;
+import me.bubble.bubble.domain.*;
 import me.bubble.bubble.dto.response.ControlPoint;
 import me.bubble.bubble.dto.response.PutResponseObject;
 import me.bubble.bubble.dto.request.*;
@@ -18,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,7 +23,7 @@ public class BubbleService {
     private final CurveService curveService;
     private final WorkspaceService workspaceService;
     private final WorkspaceRepository workspaceRepository;
-    private final FileService fileService;
+    private final PictureService pictureService;
 
     public List<BubbleInfoResponse> getBubblesByWorkspaceAndPathAndPathDepth(UUID workspaceId, String path, Integer pathDepth) {
         String workspaceOAuthId = workspaceService.getOAuthIdByWorkspaceId(workspaceId);
@@ -246,9 +242,9 @@ public class BubbleService {
             curves.add(new CurveInfoResponse(curve));
         }
 
-        List<PostFileResponse> files = new ArrayList<>();
-        for (File file : fileService.findFilesByBubble(savedBubble)) {
-            files.add(new PostFileResponse(file, savedBubble.getPath()));
+        List<PictureResponse> files = new ArrayList<>();
+        for (Picture picture : pictureService.findPicturesByBubble(savedBubble)) {
+            files.add(new PictureResponse(picture));
         }
 
         workspace.setUpdatedAt(LocalDateTime.now());
@@ -295,15 +291,15 @@ public class BubbleService {
 
     private BubbleInfoResponse buildBubbleResponse(Bubble bubble) {
         List<CurveInfoResponse> curveResponses = new ArrayList<>();
-        List<PostFileResponse> fileResponses = new ArrayList<>();
+        List<PictureResponse> pictureResponses = new ArrayList<>();
         for (Curve curve : curveService.findCurvesByBubble(bubble)) {
             curveResponses.add(new CurveInfoResponse(curve));
         }
 
-        for (File file : fileService.findFilesByBubble(bubble)) {
-            fileResponses.add(new PostFileResponse(file, bubble.getPath()));
+        for (Picture picture: pictureService.findPicturesByBubble(bubble)) {
+            pictureResponses.add(new PictureResponse(picture));
         }
-        return new BubbleInfoResponse(bubble, curveResponses, fileResponses);
+        return new BubbleInfoResponse(bubble, curveResponses, pictureResponses);
     }
 
     private int countOccurrences (String str,char character){

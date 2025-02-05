@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostFileRequest {
+public class PostPictureRequest {
     private Integer top;
     private Integer left;
     private Integer height;

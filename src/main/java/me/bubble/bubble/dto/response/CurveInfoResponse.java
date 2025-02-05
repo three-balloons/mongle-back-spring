@@ -6,21 +6,31 @@ import lombok.Getter;
 import lombok.Setter;
 import me.bubble.bubble.domain.Curve;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @JsonAutoDetect
-public class CurveInfoResponse {
+public class CurveInfoResponse implements ShapeResponse{
     private final List<ControlPoint> position;
     private final CurveConfig config;
     private final Long id;
+    private final LocalDateTime updatedAt;
+    private final String type;
+
+    @Override
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
     public CurveInfoResponse() {
         this.position = new ArrayList<>();
         this.config = new CurveConfig("", 0);
         this.id = null;
+        this.updatedAt = null;
+        this.type = "";
     }
 
     public CurveInfoResponse(Curve curve) {
@@ -32,11 +42,15 @@ public class CurveInfoResponse {
             this.position = parseControlPoints(controlPointsStr);
 
             this.id = curve.getId();
+            this.updatedAt = curve.getUpdatedAt();
+            this.type = "";
         }
         else {
             this.config = new CurveConfig("", 0); // 또는 적절한 기본 값으로 초기화
             this.position = new ArrayList<>(); // 빈 리스트로 초기화
             this.id = null;
+            this.updatedAt = null;
+            this.type = "Curve";
         }
     }
 

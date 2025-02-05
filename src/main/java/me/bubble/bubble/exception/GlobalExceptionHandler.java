@@ -237,4 +237,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ExceptionHandler(PictureNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePictureNotFoundException(PictureNotFoundException pictureNotFoundException) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code("PICTURE_NOT_FOUND")
+                .message("사진을 찾지 못하였습니다.")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

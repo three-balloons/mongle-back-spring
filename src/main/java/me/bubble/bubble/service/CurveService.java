@@ -16,7 +16,7 @@ public class CurveService {
     private final CurveRepository curveRepository;
 
     public List<Curve> findCurvesByBubble(Bubble bubble) {
-        return curveRepository.findByBubbleId(bubble.getId());
+        return curveRepository.findByBubbleIdOrderByUpdatedAtAsc(bubble.getId());
     }
 
     @Transactional
