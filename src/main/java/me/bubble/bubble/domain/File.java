@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class File {
     @Column(name = "size")
     private Double size;
 
+    @CreatedDate
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -36,6 +38,7 @@ public class File {
         this.path = path;
         this.type = type;
         this.size = size;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void update(String path, String type, Double size) {

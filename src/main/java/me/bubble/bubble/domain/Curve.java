@@ -49,6 +49,7 @@ public class Curve {
         this.thickness = thickness;
         this.bubble = bubble;
         this.controlPoint = controlPoint;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void update(String color, Integer thickness, Bubble bubble, String controlPoint) {

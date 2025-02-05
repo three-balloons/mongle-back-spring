@@ -66,5 +66,6 @@ public class Picture {
         this.angle = angle;
         this.bubble = bubble;
         this.file = file;
+        this.updatedAt = LocalDateTime.now();
     }
 }
