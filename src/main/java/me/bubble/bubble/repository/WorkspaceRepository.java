@@ -10,6 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface WorkspaceRepository extends JpaRepository<Workspace, UUID> {
-    List<Workspace> findAllByUser(User user);
+    List<Workspace> findAllByUserOrderByUpdatedAtDesc(User user);
     Optional<Workspace> findByUserAndName(User user, String name);
 }

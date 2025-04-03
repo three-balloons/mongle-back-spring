@@ -23,7 +23,10 @@ jobs:
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
       KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
-      
+      IAM_ACCESS_KEY: ${{ secrets.IAM_ACCESS_KEY }}
+      IAM_SECRET_KEY: ${{ secrets.IAM_SECRET_KEY }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+
     permissions:
       contents: read
       
@@ -46,8 +49,8 @@ jobs:
 
       - name: Generate application.yml from environment variables
         run: |
-          cp ./src/main/resources/application.yml ./src/main/resources/application.yml.bak  # Backup
-          envsubst < ./src/main/resources/application.yml.bak > ./src/main/resources/application.yml
+          cp ./src/main/resources/application-dev.yml ./src/main/resources/application-dev.yml.bak  # Backup
+          envsubst < ./src/main/resources/application-dev.yml.bak > ./src/main/resources/application-dev.yml
           
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
@@ -56,7 +59,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cicdsample
           path: build/libs/*.jar

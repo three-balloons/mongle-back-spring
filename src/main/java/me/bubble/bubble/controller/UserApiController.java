@@ -2,17 +2,14 @@ package me.bubble.bubble.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import me.bubble.bubble.dto.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import me.bubble.bubble.domain.User;
-import me.bubble.bubble.dto.GetUserResponse;
+import me.bubble.bubble.dto.response.ApiResponse;
+import me.bubble.bubble.dto.response.UserResponse;
+import me.bubble.bubble.dto.request.PutUserRequest;
 import me.bubble.bubble.service.UserService;
 import me.bubble.bubble.util.SecurityUtil;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,16 +23,12 @@ public class UserApiController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(USER_NOT_FOUND)", description = "code: \"USER_NOT_FOUND\", message: \"유저가 존재하지 않습니다.\"", content = @Content(mediaType = "application/json")),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json"))
     })
-    public ApiResponse<GetUserResponse> getUser() {
-        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
-        User user = userService.findUserByOauthId(oAuthId);
-
-        GetUserResponse response = new GetUserResponse(user);
-
-        return ApiResponse.<GetUserResponse>builder()
+    public ApiResponse<UserResponse> getUser() {
+        UserResponse user = userService.findUserByOauthId();
+        return ApiResponse.<UserResponse>builder()
                 .code("OK")
                 .message("")
-                .data(response)
+                .data(user)
                 .build();
     }
 
@@ -45,14 +38,12 @@ public class UserApiController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(USER_NOT_FOUND)", description = "code: \"USER_NOT_FOUND\", message: \"유저가 존재하지 않습니다.\"", content = @Content(mediaType = "application/json")),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json"))
     })
-    public ApiResponse<GetUserResponse> putUser(@RequestBody PutUserRequest request) {
-        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
-        User user = userService.updateUserNameAndEmail(oAuthId, request.getName(), request.getEmail());
-        GetUserResponse response = new GetUserResponse(user);
-        return ApiResponse.<GetUserResponse>builder()
+    public ApiResponse<UserResponse> putUser(@RequestBody PutUserRequest request) {
+        UserResponse user = userService.updateUserNameAndEmail(request);
+        return ApiResponse.<UserResponse>builder()
                 .code("OK")
                 .message("")
-                .data(response)
+                .data(user)
                 .build();
 
     }
@@ -64,9 +55,7 @@ public class UserApiController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200(OK)", description = "code: \"OK\", message: \"\" ", content = @Content(mediaType = "application/json"))
     })
     public ApiResponse<Void> deleteUser() {
-        String oAuthId = SecurityUtil.getCurrentUserOAuthId();
-        userService.updateDeletedAtByOauthId(oAuthId);
-
+        userService.updateDeletedAtByOauthId();
         return ApiResponse.<Void>builder()
                 .code("OK")
                 .message("")

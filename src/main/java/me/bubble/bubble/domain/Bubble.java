@@ -23,22 +23,22 @@ public class Bubble {
     private String name;
 
     @Column(name = "top")
-    private int top;
+    private Integer top;
 
     @Column(name = "leftmost")
-    private int leftmost;
+    private Integer leftmost;
 
     @Column(name = "width")
-    private int width;
+    private Integer width;
 
     @Column(name = "height")
-    private int height;
+    private Integer height;
 
     @Column(name = "path")
     private String path;
 
     @Column(name = "path_depth")
-    private int pathDepth;
+    private Integer pathDepth;
 
     @Column(name = "bubblized")
     private boolean bubblized;
@@ -52,7 +52,7 @@ public class Bubble {
     private Workspace workspace;
 
     @Builder
-    public Bubble(String name, int top, int leftmost, int width, int height, String path, int pathDepth, boolean bubblized, boolean visible, Workspace workspace) {
+    public Bubble(String name, Integer top, Integer leftmost, Integer width, Integer height, String path, Integer pathDepth, Boolean bubblized, Boolean visible, Workspace workspace) {
         this.name = name;
         this.top = top;
         this.leftmost = leftmost;
@@ -65,7 +65,7 @@ public class Bubble {
         this.workspace = workspace;
     }
 
-    public void update(String name, int top, int leftmost, int width, int height, String path, int pathDepth, boolean bubblized, boolean visible, Workspace workspace) {
+    public void update(String name, Integer top, Integer leftmost, Integer width, Integer height, String path, Integer pathDepth, Boolean bubblized, Boolean visible, Workspace workspace) {
         this.name = name;
         this.top = top;
         this.leftmost = leftmost;

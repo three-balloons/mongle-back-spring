@@ -24,7 +24,7 @@ import org.springframework.security.core.AuthenticationException;
 public class JwtTokenProvider {
     private final UserRepository userRepository;
     private final JwtProperties jwtProperties;
-    private final long JWT_EXPIRATION = 86400000L; // 1일
+    private final Long JWT_EXPIRATION = 86400000L; // 1일
 
     public String generateToken(String oauthId) {
         Date now = new Date();
